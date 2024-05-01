@@ -64,5 +64,4 @@ import ExerciseSetsRoute from './routes/setexercise.routes.js';
 app.use("/api/v1/setexercise", ExerciseSetsRoute);
 
 
-
 export {app};
