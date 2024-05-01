@@ -1,0 +1,259 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model alarm {
+  alarm_id         Int       @id @default(autoincrement())
+  alarm_time       DateTime? @db.Time(0)
+  alarm_createdat  DateTime? @db.Date
+  alarm_modifiedat DateTime? @db.Date
+  user_user_id     Int
+  user             user      @relation(fields: [user_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_alarm_user1")
+
+  @@index([user_user_id], map: "fk_alarm_user1_idx")
+}
+
+model bedtime {
+  bedtime_id         Int       @id @default(autoincrement())
+  bedtime_time       DateTime? @db.DateTime(0)
+  bedtime_createdat  DateTime? @db.Date
+  bedtime_modifiedat DateTime? @db.Date
+  user_user_id       Int
+  user               user      @relation(fields: [user_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_bedtime_user1")
+
+  @@index([user_user_id], map: "fk_bedtime_user1_idx")
+}
+
+model categoryexercise {
+  categoryexercise_id         Int        @id @default(autoincrement())
+  categoryexercise_title      String?    @db.VarChar(45)
+  categoryexercise_type       String?    @db.VarChar(45)
+  categoryexercise_createdate DateTime?  @db.Date
+  categoryexercise_modifiedat DateTime?  @db.Date
+  exercise                    exercise[]
+}
+
+model categoryfood {
+  categoryfood_id         Int       @id @default(autoincrement())
+  categoryfood_title      String?   @db.VarChar(45)
+  categoryfood_type       String?   @db.VarChar(45)
+  categoryfood_createdat  DateTime? @db.Date
+  categoryfood_modifiedat DateTime? @db.Date
+  food                    food[]
+}
+
+model exercise {
+  exercise_id                          Int              @id @default(autoincrement())
+  exercise_title                       String?          @db.VarChar(45)
+  exercise_picture                     String?          @db.VarChar(475)
+  exercise_description                 String?          @db.VarChar(898)
+  exercise_createdat                   DateTime?        @db.Date
+  exercise_modifiedat                  DateTime?        @db.Date
+  categoryexercise_categoryexercise_id Int
+  categoryexercise                     categoryexercise @relation(fields: [categoryexercise_categoryexercise_id], references: [categoryexercise_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_exercise_categoryexercise1")
+  schedule                             schedule[]
+  sets                                 sets[]
+
+  @@index([categoryexercise_categoryexercise_id], map: "fk_exercise_categoryexercise1_idx")
+}
+
+model food {
+  food_id                      Int           @id @default(autoincrement())
+  food_title                   String?       @db.VarChar(145)
+  food_chef                    String?       @db.VarChar(145)
+  food_calories                Float?
+  food_fats                    Float?
+  food_proteins                Float?
+  food_descriptions            String?       @db.VarChar(45)
+  food_step_by_step            String?       @db.Text
+  food_createdat               String?       @db.VarChar(45)
+  food_modifiedat              String?       @db.VarChar(45)
+  categoryfood_categoryfood_id Int
+  categoryfood                 categoryfood  @relation(fields: [categoryfood_categoryfood_id], references: [categoryfood_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_food_categoryfood1")
+  ingredients                  ingredients[]
+  mealplan                     mealplan[]
+  userlike                     userlike[]
+
+  @@index([categoryfood_categoryfood_id], map: "fk_food_categoryfood1_idx")
+}
+
+model goals {
+  goals_id          Int       @id
+  goals_title       String?   @db.VarChar(45)
+  goals_img         String?   @db.VarChar(845)
+  goals_description String?   @db.VarChar(45)
+  goals_createdat   DateTime? @db.Date
+  goals_modifiedat  DateTime? @db.Date
+}
+
+model ingredients {
+  ingredients_id          Int       @id @default(autoincrement())
+  ingredients_title       String?   @db.VarChar(455)
+  ingredients_img         String?   @db.VarChar(465)
+  ingredients_description String?   @db.VarChar(45)
+  ingredients_createdat   DateTime? @db.Date
+  ingredients_modifiedat  DateTime? @db.Date
+  food_food_id            Int
+  food                    food      @relation(fields: [food_food_id], references: [food_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ingredients_food1")
+
+  @@index([food_food_id], map: "fk_ingredients_food1_idx")
+}
+
+model login {
+  login_id         Int       @id @default(autoincrement())
+  login_status     Int?
+  login_createdat  DateTime? @db.Date
+  login_modifiedat DateTime? @db.Date
+  user_user_id     Int
+  user             user      @relation(fields: [user_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_login_user1")
+
+  @@index([user_user_id], map: "fk_login_user1_idx")
+}
+
+model mealplan {
+  mealplan_id         Int       @id @default(autoincrement())
+  mealplan_createdat  DateTime? @db.Date
+  mealplan_modifiedat DateTime? @db.Date
+  user_user_id        Int
+  food_food_id        Int
+  food                food      @relation(fields: [food_food_id], references: [food_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_mealplan_food1")
+  user                user      @relation(fields: [user_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_mealplan_user1")
+
+  @@index([food_food_id], map: "fk_mealplan_food1_idx")
+  @@index([user_user_id], map: "fk_mealplan_user1_idx")
+}
+
+model notification {
+  notification_id         Int       @id
+  notification_title      String?   @db.VarChar(455)
+  notification_img        String?   @db.VarChar(455)
+  notification_createdat  DateTime? @db.Date
+  notification_modifiedat DateTime? @db.Date
+}
+
+model otp {
+  otp_id         Int       @id @default(autoincrement())
+  otp_number     Int?
+  otp_createdat  DateTime? @db.Date
+  otp_modifiedat DateTime? @db.Date
+  user_user_id   Int
+  user           user      @relation(fields: [user_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_otp_user1")
+
+  @@index([user_user_id], map: "fk_otp_user1_idx")
+}
+
+model profile {
+  profile_id           Int       @id @default(autoincrement())
+  profile_name         String?   @db.VarChar(45)
+  profile_email        String?   @db.VarChar(45)
+  profile_weight       Int?
+  profile_height       Int?
+  profile_iscreatedat  DateTime? @db.Date
+  profile_img          String?   @db.VarChar(845)
+  profile_ismodifiedat DateTime? @db.Date
+  user_user_id         Int
+  user                 user      @relation(fields: [user_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_profile_user")
+
+  @@index([user_user_id], map: "fk_profile_user_idx")
+}
+
+model schedule {
+  schedule_id          Int       @id @default(autoincrement())
+  schedule_time        String?   @db.VarChar(45)
+  schedule_createdat   DateTime? @db.Date
+  schedule_modifiedat  DateTime? @db.Date
+  user_user_id         Int
+  exercise_exercise_id Int
+  exercise             exercise  @relation(fields: [exercise_exercise_id], references: [exercise_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_schedule_exercise1")
+  user                 user      @relation(fields: [user_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_schedule_user1")
+
+  @@index([exercise_exercise_id], map: "fk_schedule_exercise1_idx")
+  @@index([user_user_id], map: "fk_schedule_user1_idx")
+}
+
+model setexercise {
+  setexercise_id         Int       @id @default(autoincrement())
+  setexercise_title      String?   @db.VarChar(145)
+  setexercise_duration   String?   @db.VarChar(145)
+  setexercise_howtodo    String?   @db.Text
+  setexercise_createdat  DateTime? @db.Date
+  setexercise_modifiedat DateTime? @db.Date
+  sets_sets_id           Int
+  setexercise_pictures   String?   @db.VarChar(8745)
+  sets                   sets      @relation(fields: [sets_sets_id], references: [sets_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_setexercise_sets1")
+
+  @@index([sets_sets_id], map: "fk_setexercise_sets1_idx")
+}
+
+model sets {
+  sets_id              Int           @id @default(autoincrement())
+  sets_title           String?       @db.VarChar(45)
+  sets_createdat       DateTime?     @db.Date
+  sets_modifiedat      DateTime?     @db.Date
+  exercise_exercise_id Int
+  setexercise          setexercise[]
+  exercise             exercise      @relation(fields: [exercise_exercise_id], references: [exercise_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sets_exercise1")
+
+  @@index([exercise_exercise_id], map: "fk_sets_exercise1_idx")
+}
+
+model stepscount {
+  stepscount_id    Int       @id @default(autoincrement())
+  stepscount_count Int?
+  stepscount_date  DateTime? @db.Date
+  user_user_id     Int
+  user             user      @relation(fields: [user_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_stepscount_user1")
+
+  @@index([user_user_id], map: "fk_stepscount_user1_idx")
+}
+
+model user {
+  user_id            Int          @id @default(autoincrement())
+  user_name          String?      @db.VarChar(485)
+  user_email         String?      @db.VarChar(495)
+  user_password      String?      @db.VarChar(465)
+  user_role          String?      @db.VarChar(566)
+  user_isemailverify Int?
+  user_iscreatedat   DateTime?    @db.Date
+  user_ismodifiedat  DateTime?    @db.Date
+  alarm              alarm[]
+  bedtime            bedtime[]
+  login              login[]
+  mealplan           mealplan[]
+  otp                otp[]
+  profile            profile[]
+  schedule           schedule[]
+  stepscount         stepscount[]
+  userlike           userlike[]
+  water              water[]
+}
+
+model userlike {
+  userlike_id         Int       @id @default(autoincrement())
+  userlike_like       Int?
+  userlike_createdat  DateTime? @db.Date
+  userlike_modifiedat DateTime? @db.Date
+  user_user_id        Int
+  food_food_id        Int
+  food                food      @relation(fields: [food_food_id], references: [food_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_userlike_food1")
+  user                user      @relation(fields: [user_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_userlike_user1")
+
+  @@index([food_food_id], map: "fk_userlike_food1_idx")
+  @@index([user_user_id], map: "fk_userlike_user1_idx")
+}
+
+model water {
+  water_id           Int       @id @default(autoincrement())
+  water_num_of_glass Int?
+  water_createdat    DateTime? @db.Date
+  water_modifiedat   DateTime? @db.Date
+  user_user_id       Int
+  user               user      @relation(fields: [user_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_water_user1")
+
+  @@index([user_user_id], map: "fk_water_user1_idx")
+}
