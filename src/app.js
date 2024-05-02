@@ -63,5 +63,7 @@ app.use("/api/v1/sets", Sets);
 import ExerciseSetsRoute from './routes/setexercise.routes.js';
 app.use("/api/v1/setexercise", ExerciseSetsRoute);
 
+import IngredientsRoute from './routes/ingredients.routes.js';
+app.use("/api/v1/ingredients", IngredientsRoute);
 
 export {app};
