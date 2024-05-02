@@ -16,4 +16,4 @@ if(getsetExercise)
     {
         throw new ApiError(403, error?.message || "Error in Set Exercise");
     }
-} )
+} );

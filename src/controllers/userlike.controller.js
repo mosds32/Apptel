@@ -30,3 +30,28 @@ catch(error)
 throw new ApiError(403, error?.message || "Error in Likes");
 }
 });
+export const GetLikes = asyncHandler(async(req, res, next) =>
+{
+try
+{
+const like_user = await prisma.userlike.findMany(
+    {
+        where:
+        {
+            user_user_id: req.user.user_id
+        }
+    }
+);
+
+const likes = like_user.map(userlike=>userlike.userlike_like);
+if(likes)
+{
+    return res.status(200).json(new ApiResponse(200, "Get Likes", likes));
+}
+}
+catch(error)
+{
+    throw new ApiError(403, error?.message || "Error in Get Likes");
+}
+
+});
